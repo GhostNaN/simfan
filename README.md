@@ -1,5 +1,6 @@
 # simfan
 ### simfan is a simple hwmon fan controller 
+#### THIS IS VERY ALPHA, USE AT YOUR OWN RISK
 #### A very no thrills fan controller wrtten in C to use very little resources
 ##### Refer to [simfan.conf](/simfan.conf.example) for all available features
 ## Dependencies
