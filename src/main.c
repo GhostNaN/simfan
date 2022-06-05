@@ -33,9 +33,9 @@ static void parse_command_line(int argc, char **argv) {
         "Usage: simfan [options]\n"
         "\n"
         "Options:\n"
-        "--help           -h            Displays this help message\n"
-        "--verbose    -v             Be more verbose\n"
-        "--config       -c FILE     Specifies config file to use\n"
+        "--help      -h          Displays this help message\n"
+        "--verbose   -v          Be more verbose\n"
+        "--config    -c FILE     Specifies config file to use\n"
         ;
 
     char opt;
@@ -43,7 +43,7 @@ static void parse_command_line(int argc, char **argv) {
 
         switch (opt) {
         case 'h':
-            fprintf(stdout, "%s", usage);
+            printf( "%s", usage);
             exit(EXIT_SUCCESS);
         case 'v':
             VERBOSE = 1;
