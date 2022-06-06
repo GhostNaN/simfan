@@ -139,6 +139,8 @@ fan_type  *config_get_fans() {
             fprintf(stderr, "pwm_increment values MUST be greater than 0\n");
             exit(EXIT_FAILURE);
         }
+
+        config_setting_lookup_int(fan_settings, "default_pwm_enable", &fan_list[fan].default_pwm_enable);
     }
 
     return fan_list;

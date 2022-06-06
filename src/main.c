@@ -68,7 +68,9 @@ int main(int argc, char **argv) {
     printf("Config passed, Starting simfan...\n");
 
     // Enable manual pwm mode
-    set_pwm_enable_mode(fan_list, '1');
+    for(int fan=0; fan < fan_list[0].count; fan++)
+        set_pwm_enable_mode(fan_list[fan], 1);
+
     read_curr_pwm(fan_list);
     
     int temp_indexes[temp_list[0].count];
@@ -98,8 +100,9 @@ int main(int argc, char **argv) {
         if (VERBOSE)
             printf("\n");
     }
-    // Return pwm control to bios
-    set_pwm_enable_mode(fan_list, '5');
+    // Return pwm control to defaul,t
+    for(int fan=0; fan < fan_list[0].count; fan++)
+        set_pwm_enable_mode(fan_list[fan], fan_list[fan].default_pwm_enable);
 
     free((void*) fan_list);
     free((void*) temp_list);

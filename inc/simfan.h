@@ -13,6 +13,7 @@ typedef struct fan_type {
     int *pwm_steps;
     int  pwm_steps_count;
     int pwm_increment;
+    int default_pwm_enable;
     int count;
     int curr_pwm;
     int target_pwm;
@@ -34,7 +35,7 @@ void config_set_globals();
 fan_type  *config_get_fans();
 temp_type  *config_get_temps(fan_type *fan_list);
 
-void set_pwm_enable_mode(fan_type *fan_list, char mode);
+void set_pwm_enable_mode(fan_type fan, int mode);
 void read_curr_pwm(fan_type *fan_list);
 
 void read_temps(temp_type *temp_list);

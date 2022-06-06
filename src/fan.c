@@ -6,27 +6,27 @@
 
 #include <simfan.h>
 
-void set_pwm_enable_mode(fan_type *fan_list, char mode) {
-    for(int fan=0; fan < fan_list[0].count; fan++) {
+void set_pwm_enable_mode(fan_type fan, int mode) {
 
-        char *pwm_enable_file = calloc(strlen(fan_list[fan].pwm_file) + strlen("_enable")+1,  sizeof(char));
-        strcpy(pwm_enable_file, fan_list[fan].pwm_file);
-        strcat(pwm_enable_file, "_enable");
+    char *pwm_enable_file = calloc(strlen(fan.pwm_file) + strlen("_enable")+1,  sizeof(char));
+    strcpy(pwm_enable_file, fan.pwm_file);
+    strcat(pwm_enable_file, "_enable");
 
-        FILE *file;
-        if ((file = fopen(pwm_enable_file, "w")) == NULL) {
-            perror(pwm_enable_file);
-            exit(EXIT_FAILURE);
-        }
-        if (fwrite(&mode, sizeof(mode), 1, file) == -1)  {
-            perror(pwm_enable_file);
-            exit(EXIT_FAILURE);
-        }
-        if (VERBOSE)
-            printf("Fan:\"%s\" pwm_enable set to %c\n", fan_list[fan].name, mode);
-        fclose(file);
-        free((void*) pwm_enable_file);
+    FILE *file;
+    if ((file = fopen(pwm_enable_file, "w")) == NULL) {
+        perror(pwm_enable_file);
+        exit(EXIT_FAILURE);
     }
+    char pwm_enable_string[3];
+    sprintf(pwm_enable_string, "%d", mode);
+    if (fwrite(&pwm_enable_string, sizeof(pwm_enable_string), 1, file) == -1)  {
+        perror(pwm_enable_file);
+        exit(EXIT_FAILURE);
+    }
+    if (VERBOSE)
+        printf("Fan:\"%s\" pwm_enable set to %i\n", fan.name, mode);
+    fclose(file);
+    free((void*) pwm_enable_file);
 }
 
 void read_curr_pwm(fan_type *fan_list) {

@@ -34,6 +34,9 @@ fans = (
         // Helps smooths out pwm speed ramp 
         // Setting to 255 effectively disables this setting 
         pwm_increment_speed = 255;
+        // simfan sets pwm_file_enable to 1 (aka manual mode) to control fans
+        // This is the value that you want pwm_file_enable to return to after quitting simfan
+        default_pwm_enable = 2;
     },
     // Other example fans
     {
@@ -41,12 +44,14 @@ fans = (
         pwm_file = "/sys/devices/platform/MYPLATFORM/hwmon/hwmon*/pwm3";
         pwm_steps = [60, 120, 180, 255];
         pwm_increment_speed = 15;
+        default_pwm_enable = 5;
     },
     {
         name = "GPU Fan";
         pwm_file = "/sys/bus/pci/devices/MYGPUID/hwmon/hwmon?/pwm1";
         pwm_steps = [0, 60, 120, 255];
         pwm_increment_speed = 25;
+        default_pwm_enable = 2;
     },
 ); 
 
