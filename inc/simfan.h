@@ -33,7 +33,6 @@ typedef struct temp_type {
 void config_set_globals();
 fan_type  *config_get_fans();
 temp_type  *config_get_temps(fan_type *fan_list);
-void config_error_check(fan_type *fan_list, temp_type *temp_list);
 
 void set_pwm_enable_mode(fan_type *fan_list, char mode);
 void read_curr_pwm(fan_type *fan_list);

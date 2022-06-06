@@ -40,9 +40,20 @@ static config_t get_config() {
     for (int i=0; i < 4; i++) {
         if(config_read_file(&cfg, configFileLocations[i]) == CONFIG_TRUE)
             break;
-        if (i == 3) {
-            perror("No config file found!");
-            exit(EXIT_FAILURE);
+        else {
+            config_error_t err_type = config_error_type(&cfg);
+            if (err_type == CONFIG_ERR_PARSE) {
+                // config_error_line() and config_error_text() doesn't work
+                fprintf(stderr, "Could not parse:\"%s\"\n"
+                                         "Please make sure your config is correctly set\n"
+                                         "Refer to this: https://hyperrealm.github.io/libconfig/libconfig_manual.html#Configuration-Files\n", configFileLocations[i]);
+                exit(EXIT_FAILURE);
+            }
+            else if (err_type == CONFIG_ERR_FILE_IO && i == 3) {
+                perror("No config file found!");
+                fprintf(stderr, "Please check simfan.conf for suitable locations\n");
+                exit(EXIT_FAILURE);
+            }
         }
     }
 
@@ -98,18 +109,33 @@ fan_type  *config_get_fans() {
         config_setting_t *pwm_steps_setting = config_setting_lookup(fan_settings, "pwm_steps");
         fan_list[fan].pwm_steps_count = config_setting_length(pwm_steps_setting);
         if (fan_list[fan].pwm_steps_count < 2) {
-            fprintf(stderr, "A MINIUMUM of 2 pwm_steps is required for Fan:\"%s\"\n",fan_list[fan].name);
+            fprintf(stderr, "Fan:\"%s\" had less than 2 pwm_steps\n", fan_list[fan].name);
+            fprintf(stderr, "A MINIUMUM of 2 pwm_steps is required\n");
             exit(EXIT_FAILURE);
         } 
         fan_list[fan].pwm_steps = calloc(fan_list[fan].pwm_steps_count, sizeof(int));
+        int past_pwm_step = -1;
         for (int j=0; j < fan_list[fan].pwm_steps_count; j++) {
             int pwm_step = config_setting_get_int_elem(pwm_steps_setting, j);
+
+            if (0 > pwm_step ||pwm_step > 255) {
+                fprintf(stderr, "Fan:\"%s\" pwm_steps had a value of \"%i\" \n", fan_list[fan].name, pwm_step);
+                fprintf(stderr, "Only values from 0-255 can be set for pwm_steps\n");
+                exit(EXIT_FAILURE);
+            }
+            if (past_pwm_step > pwm_step) {
+                fprintf(stderr, "Fan:\"%s\" pwm_steps contained values of \"%i,%i\"\n", fan_list[fan].name, past_pwm_step, pwm_step);
+                fprintf(stderr, "pwm_steps MUST be ordered from low to high\n");
+                exit(EXIT_FAILURE);
+            }
+            past_pwm_step = pwm_step;
+
             fan_list[fan].pwm_steps[j] = pwm_step;
         }     
 
         config_setting_lookup_int(fan_settings, "pwm_increment_speed", &fan_list[fan].pwm_increment);
         if (fan_list[fan].pwm_increment <= 0) {
-            fprintf(stderr, "Fan:\"%s\" has a pwm_increment value of \"%i\"\n", fan_list[fan].name, fan_list[fan].pwm_increment);
+            fprintf(stderr, "Fan:\"%s\" had a pwm_increment value of \"%i\"\n", fan_list[fan].name, fan_list[fan].pwm_increment);
             fprintf(stderr, "pwm_increment values MUST be greater than 0\n");
             exit(EXIT_FAILURE);
         }
@@ -140,12 +166,21 @@ temp_type  *config_get_temps(fan_type *fan_list) {
         config_setting_t *temp_steps_setting = config_setting_lookup(temp_settings, "temp_steps");
         temp_list[temp].temp_steps_count = config_setting_length(temp_steps_setting);
         if (temp_list[temp].temp_steps_count < 2) {
-            fprintf(stderr, "A MINIUMUM of 2 temp_steps is required for Temp:\"%s\"\n",temp_list[temp].name);
+            fprintf(stderr, "Temp:\"%s\" had less than 2 temp_steps\n", temp_list[temp].name);
+            fprintf(stderr, "A MINIUMUM of 2 temp_steps is required\n");
             exit(EXIT_FAILURE);
         }
         temp_list[temp].temp_steps = calloc(temp_list[temp].temp_steps_count, sizeof(int));
+        int past_temp_step_value = -256;
         for (int temp_step=0; temp_step < temp_list[temp].temp_steps_count; temp_step++) {
             int temp_step_value = config_setting_get_int_elem(temp_steps_setting, temp_step);
+            // If array is not ordered from low to high
+            if (past_temp_step_value > temp_step_value) {
+                fprintf(stderr, "Temp:\"%s\" temp_steps contained values of \"%i,%i\"\n", temp_list[temp].name, past_temp_step_value, temp_step_value);
+                fprintf(stderr, "temp_steps MUST be ordered from low to high\n");
+                exit(EXIT_FAILURE);
+            }
+            past_temp_step_value = temp_step_value;
             temp_list[temp].temp_steps[temp_step] = temp_step_value;
         }
 
@@ -159,7 +194,9 @@ temp_type  *config_get_temps(fan_type *fan_list) {
             const char * assigned_fan_name = config_setting_get_string_elem(assigned_fans_setting, assigned_fan);
             for(int fan=0; fan < fan_list[0].count; fan++) {
                 if (fan_list[fan].pwm_steps_count != temp_list[temp].temp_steps_count) {
-                    fprintf(stderr, "Fan:\"%s\" and Temp:\"%s\" MUST have the same number of steps\n", fan_list[fan].name, temp_list[temp].name);
+                    fprintf(stderr, "Fan:\"%s\" had %i values in pwm_steps and Temp:\"%s\" had %i values in temp_steps \n", 
+                            fan_list[fan].name, fan_list[fan].pwm_steps_count, temp_list[temp].name, temp_list[temp].temp_steps_count);
+                    fprintf(stderr, "Both MUST have the same number of steps\n");
                     exit(EXIT_FAILURE);
                 }
 

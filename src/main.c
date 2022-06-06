@@ -65,6 +65,7 @@ int main(int argc, char **argv) {
     config_set_globals();
     fan_type *fan_list = config_get_fans();
     temp_type *temp_list = config_get_temps(fan_list);
+    printf("Config passed, Starting simfan...\n");
 
     // Enable manual pwm mode
     set_pwm_enable_mode(fan_list, '1');
