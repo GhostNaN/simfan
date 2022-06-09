@@ -87,20 +87,21 @@ int main(int argc, char **argv) {
             for (int fan=0; fan < fan_list[0].count; fan++)
                 fan_list[fan].temp_set = NULL;
             
-            for (int index=0; index < temp_list[0].count; index++) {
+            for (int index=0; index < temp_list[0].count; index++)
                 set_temp_fans_target_pwm(temp_list[temp_indexes[index]], temp_indexes);
-            }
         }
 
         for (int i=0; i < INTERVAL; i++) {
             set_fans(fan_list);
             sleep(1);
+            if (KILLALL)
+                break;
         }
 
         if (VERBOSE)
             printf("\n");
     }
-    // Return pwm control to defaul,t
+    // Return pwm control to default
     for(int fan=0; fan < fan_list[0].count; fan++)
         set_pwm_enable_mode(fan_list[fan], fan_list[fan].default_pwm_enable);
 
