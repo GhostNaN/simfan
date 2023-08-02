@@ -33,6 +33,8 @@ int temp_changed(temp_type *temp_list, int *past_temps) {
     for(int temp=0; temp < temp_list[0].count; temp++) {   
 
             if ((temp_list[temp].curr_temp < (past_temps[temp] - THRESHOLD)) || (temp_list[temp].curr_temp > (past_temps[temp] + THRESHOLD))) {
+                if (VERBOSE)
+                    printf("Temp:\"%s\" when from %i°C to %i°C\n", temp_list[temp].name, past_temps[temp], temp_list[temp].curr_temp);
                 past_temps[temp] = temp_list[temp].curr_temp;
                 temp_changed = 1;
             }

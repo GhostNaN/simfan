@@ -75,12 +75,15 @@ int main(int argc, char **argv) {
     
     int temp_indexes[temp_list[0].count];
     int past_temps[temp_list[0].count];
+    // Set all to 0 to trigger a temp_changed
     memset(temp_indexes, 0, sizeof(temp_indexes));
     memset(past_temps, 0, sizeof(past_temps));
 
     while(!KILLALL) {
         read_temps(temp_list);
         if (temp_changed(temp_list, past_temps)) {
+            if (VERBOSE)
+                printf("\n");
             if (temp_list[0].count > 1) // No need to sort array size of 1
                 sort_temps(temp_list, temp_indexes);
 
@@ -99,7 +102,7 @@ int main(int argc, char **argv) {
         }
 
         if (VERBOSE)
-            printf("\n");
+            printf("\n\n");
     }
     // Return pwm control to default
     for(int fan=0; fan < fan_list[0].count; fan++)
@@ -107,6 +110,7 @@ int main(int argc, char **argv) {
 
     free((void*) fan_list);
     free((void*) temp_list);
+    free(CONFIG_FILE);
     
     return EXIT_SUCCESS;
 }
