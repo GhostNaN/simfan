@@ -63,9 +63,7 @@ static config_t get_config() {
 void  config_set_globals() {
     config_t cfg = get_config();
 
-    int interval;
-    if(config_lookup_int(&cfg, "interval", &interval)) {
-        INTERVAL = interval;
+    if(config_lookup_int(&cfg, "interval", &INTERVAL)) {
         if (VERBOSE)
             printf ("Interval:\"%i\"\n", INTERVAL);
     }
@@ -74,9 +72,7 @@ void  config_set_globals() {
                     "Using default of:\"%i\"\n", INTERVAL);
     }
 
-    int threshold;
-    if(config_lookup_int(&cfg, "threshold", &threshold)) {
-        THRESHOLD = threshold;
+    if(config_lookup_int(&cfg, "threshold", &THRESHOLD)) {
         if (VERBOSE)
             printf ("Threshold:\"%i\"\n", THRESHOLD);
     }
@@ -141,6 +137,7 @@ fan_type  *config_get_fans() {
         }
 
         config_setting_lookup_int(fan_settings, "default_pwm_enable", &fan_list[fan].default_pwm_enable);
+
     }
 
     return fan_list;
