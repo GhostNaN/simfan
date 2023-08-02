@@ -52,7 +52,7 @@ static void write_pwm (char *file_name, int pwm_num) {
         exit(EXIT_FAILURE);
     }
 
-    char pwm_string[3];
+    char pwm_string[4];
     sprintf(pwm_string, "%d", pwm_num);
     if (fwrite(&pwm_string, sizeof(pwm_string), 1, file) == -1)  {
         perror(file_name);
