@@ -38,7 +38,7 @@ static void parse_command_line(int argc, char **argv) {
         "--config    -c FILE     Specifies config file to use\n"
         ;
 
-    char opt;
+    int opt;
     while((opt = getopt_long(argc, argv, "hvc:", long_options, NULL)) != -1) {
 
         switch (opt) {
