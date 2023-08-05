@@ -9,13 +9,15 @@
 // Notes:
 // Root privilege to run simfan is most likely necessary (AT YOUR OWN RISK)
 // This config is only read ONCE at startup, to apply changes restart simfan
-// File locations with glob wildcards like * or ? is allowed (very useful for hwmon paths)
+// File locations with glob wildcards like * or ? are allowed (very useful for hwmon paths)
+//     As long as it doesn't point to more than 1 file/folder
 // Step settings pwm_steps and temp_steps MUST match in array size
 // Step settings also MUST be ordered from low to high
 // If a temp is between steps, linear interpolation is applied to pwm_steps
 
 // Poll rate for temps in seconds
 interval = 3;
+
 // Allows for some leeway +/- temp, as to not constantly change fan speed
 threshold = 2; 
 
@@ -24,16 +26,20 @@ fans = (
     {
         // Use a unique fan name for assigning to a temp sensor
         name = "Template Fan";
+        
         // Path to the pwm file in hwmon of a fan like "pwm1"
         pwm_file = "/path/to/pwm_file";
+        
         // PWM steps from 0-255
         // Use as many steps as needed
         // Just as long as it matches the temp sensor's temp_steps size
         pwm_steps = [0, 255];
+        
         // The amount of pwm steps per second between 1-255
         // Helps smooths out pwm speed ramp 
         // Setting to 255 effectively disables this setting 
         pwm_increment_speed = 255;
+        
         // simfan sets pwm_file_enable to 1 (aka manual mode) to control fans
         // This is the value that you want pwm_file_enable to return to after quitting simfan
         default_pwm_enable = 2;
@@ -60,12 +66,15 @@ temp_sensors = (
     {
         // Use a unique temp name for debugging with -v flag
         name = "Template Temp";
+        
         // Path to the temp file in hwmon of a temp sensor like "temp1_input"
         temp_file = "/path/to/temp_file";
+        
         // Temperature steps in centigrade
         // Use as many steps as needed
         // Just as long as it matches the assigned fans pwm_steps size
         temp_steps = [50, 100];
+        
         // Fans you want the temp sensor to control
         // Assigning multiple fans, even from other temp sensors is allowed
         // And if multiple temp sensors have the same fans, 
