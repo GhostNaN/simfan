@@ -1,8 +1,7 @@
 # simfan
 ### simfan is a simple hwmon fan controller 
-#### THIS IS VERY ALPHA, USE AT YOUR OWN RISK
 #### A very no thrills fan controller wrtten in C to use very little resources
-##### Refer to [simfan.conf](/simfan.conf.example) for all available features
+##### Refer to [simfan.conf.example](/simfan.conf.example) for all available features
 ## Dependencies
 - libconfig
   - Because I'm too lazy to make my own config parser
@@ -22,16 +21,16 @@ cp simfan.conf.example /etc
 ```
 
 ## Usage 
-Root privilege to run simfan is most likely necessary (AT YOUR OWN RISK)
 #### To Run:
 ```
 simfan
 ```
+##### Notice: Root privilege to run simfan is most likely necessary (AT YOUR OWN RISK)
 #### For help:
 ```
 simfan -h
 ```
-Everything else you'll need is in [simfan.conf](/simfan.conf.example)
+Everything else you'll need is in [simfan.conf.example](/simfan.conf.example)
 
  ## License
 This project is licensed under the GPLv3 License - see the [LICENSE](/LICENSE) file for details
