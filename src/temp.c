@@ -42,33 +42,38 @@ int temp_changed(temp_type *temp_list, int *past_temps) {
     return temp_changed;
 }
 
+// struct for sorting temps
+typedef struct {
+    float value;
+    int index;
+} temp_pair;
+
+// Compare function for qsort (sorting in descending order)
+int compare_temps(const void* a, const void* b) {
+    float fa = ((temp_pair*)a)->value;
+    float fb = ((temp_pair*)b)->value;
+
+    if (fa < fb) return 1;
+    if (fa > fb) return -1;
+    return 0;
+}
+
 // Sorts the temps from highest to lowest relative temp
 void sort_temps(temp_type *temp_list, int *temp_indexes) {
 
-    float rel_temp;
-    float top_temps[temp_list[0].count];
     int min_temp, max_temp;
+    temp_pair rel_temp_list[temp_list[0].count];
 
-    for(int index=0; index < temp_list[0].count; index++) {
-        for(int temp=0; temp < temp_list[0].count; temp++) {
-            
+    // Sort by temp as a float between the min and max temp values
+    for(int temp=0; temp < temp_list[0].count; temp++) {
             min_temp = temp_list[temp].temp_steps[0];
             max_temp = temp_list[temp].temp_steps[temp_list[temp].temp_steps_count-1];
-            rel_temp = (float) (temp_list[temp].curr_temp - min_temp) / (float) (max_temp - min_temp);
+            rel_temp_list[temp].value = (float) (temp_list[temp].curr_temp - min_temp) / (float) (max_temp - min_temp);
+            rel_temp_list[temp].index = temp;
+    }
+    qsort(rel_temp_list, temp_list[0].count, sizeof(temp_pair), compare_temps);
 
-            // Highest relative temp and not the same a previous highest temp
-            if (index==0) {
-                if (rel_temp >= top_temps[index] || temp==0) {
-                    top_temps[index] = rel_temp;
-                    temp_indexes[index] = temp;
-                }
-            }
-            else {
-                if ((rel_temp >= top_temps[index] && rel_temp < top_temps[index-1]) || temp==0) {
-                    top_temps[index] = rel_temp;
-                    temp_indexes[index] = temp;
-                }
-            }
-        }
+    for(int temp=0; temp < temp_list[0].count; temp++) {
+        temp_indexes[temp] = rel_temp_list[temp].index;
     }
 }
