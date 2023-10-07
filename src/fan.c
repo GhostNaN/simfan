@@ -120,3 +120,8 @@ void set_fans(fan_type *fan_list) {
     }
 
 }
+
+void max_fans(fan_type *fan_list) {
+    for (int fan=0; fan < fan_list[0].count; fan++)
+        write_pwm(fan_list[fan].pwm_file, 255);
+}

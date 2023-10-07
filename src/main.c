@@ -12,6 +12,7 @@ int VERBOSE = 0;
 int INTERVAL = 1;
 int THRESHOLD = 1;
 char *CONFIG_FILE = NULL;
+int MAX_FANS = 0;
 int KILLALL = 0;
 
 static void handle_signal(int signum) {
@@ -26,6 +27,7 @@ static void parse_command_line(int argc, char **argv) {
         {"help", no_argument, NULL, 'h'},
         {"verbose", no_argument, NULL, 'v'},
         {"config", required_argument, NULL, 'c'},
+        {"max", no_argument, NULL, 'x'},
         {0, 0, 0, 0}
     };
 
@@ -36,10 +38,11 @@ static void parse_command_line(int argc, char **argv) {
         "--help      -h          Displays this help message\n"
         "--verbose   -v          Be more verbose\n"
         "--config    -c FILE     Specifies config file to use\n"
+        "--max    -x           Send all the fans to full blast\n"
         ;
 
     int opt;
-    while((opt = getopt_long(argc, argv, "hvc:", long_options, NULL)) != -1) {
+    while((opt = getopt_long(argc, argv, "hvc:x", long_options, NULL)) != -1) {
 
         switch (opt) {
         case 'h':
@@ -51,6 +54,8 @@ static void parse_command_line(int argc, char **argv) {
         case 'c':
             CONFIG_FILE = strdup(optarg);
             break;
+        case 'x':
+            MAX_FANS = 1;
         }
     }
 }
@@ -79,6 +84,12 @@ int main(int argc, char **argv) {
     memset(temp_indexes, 0, sizeof(temp_indexes));
     memset(past_temps, 0, sizeof(past_temps));
 
+    if (MAX_FANS) {
+        printf("Setting all fans to to max pwm of 255\n");
+        max_fans(fan_list);
+        while(!KILLALL)
+            sleep(1);
+    }
     while(!KILLALL) {
         read_temps(temp_list);
         if (temp_changed(temp_list, past_temps)) {
