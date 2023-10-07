@@ -91,7 +91,7 @@ int main(int argc, char **argv) {
                 fan_list[fan].temp_set = NULL;
             
             for (int index=0; index < temp_list[0].count; index++)
-                set_temp_fans_target_pwm(temp_list[temp_indexes[index]], temp_indexes);
+                set_temp_fans_target_pwm(temp_list[temp_indexes[index]]);
         }
 
         for (int i=0; i < INTERVAL; i++) {

@@ -41,7 +41,7 @@ void read_curr_pwm(fan_type *fan_list);
 void read_temps(temp_type *temp_list);
 int temp_changed(temp_type *temp_list, int *past_temps);
 void sort_temps(temp_type *temp_list, int *temp_indexes) ;
-void set_temp_fans_target_pwm( temp_type temp, int *temp_indexes);
+void set_temp_fans_target_pwm( temp_type temp);
 void set_fans(fan_type *fan_list);
 
 #endif

@@ -61,7 +61,7 @@ static void write_pwm (char *file_name, int pwm_num) {
     fclose(file);
 }
 
-void set_temp_fans_target_pwm(temp_type temp, int *temp_indexes) {
+void set_temp_fans_target_pwm(temp_type temp) {
 
     float rel_temp_pos, rel_fan_step;
     int pwm = 255;
